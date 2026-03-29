@@ -16,6 +16,10 @@ API.interceptors.response.use(
     return response;
   },
   async (error) => {
+    if (!error.response) {
+      return Promise.reject(error);
+    }
+
     const { data, status } = error.response;
 
     if (data === "Unauthorized" && status === 401) {

@@ -1,7 +1,7 @@
 import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
-import session from "cookie-session";
+import session from "express-session";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
@@ -25,12 +25,15 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    name: "session",
-    keys: [config.SESSION_SECRET],
-    maxAge: 24 * 60 * 60 * 1000,
-    secure: process.env.APP_ENV === "production",
-    httpOnly: true,
-    sameSite: process.env.APP_ENV === "production" ? "none" : "lax",
+    secret: config.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.APP_ENV === "production",
+      httpOnly: true,
+      sameSite: process.env.APP_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    },
   })
 );
 
