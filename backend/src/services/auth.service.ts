@@ -27,7 +27,7 @@ export const loginOrCreateAccountService = async (data: {
     session.startTransaction();
     console.log("Started Session...");
 
-    let user = await UserModel.findOne({ email }).session(session);
+let user = await UserModel.findOne({ email }).session(session);
 
     if (!user) {
       // Create a new user if it doesn't exist
@@ -71,6 +71,18 @@ export const loginOrCreateAccountService = async (data: {
 
       user.currentWorkspace = workspace._id as mongoose.Types.ObjectId;
       await user.save({ session });
+    } else {
+      // existing user - make sure currentWorkspace is set
+      if (!user.currentWorkspace) {
+        const workspace = await WorkspaceModel.findOne({
+          owner: user._id,
+        }).session(session);
+
+        if (workspace) {
+          user.currentWorkspace = workspace._id as mongoose.Types.ObjectId;
+          await user.save({ session });
+        }
+      }
     }
     await session.commitTransaction();
     session.endSession();

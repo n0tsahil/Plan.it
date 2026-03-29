@@ -8,9 +8,11 @@ import passport from "passport";
 
 export const googleLoginCallback = asyncHandler(
   async (req: Request, res: Response) => {
+    console.log("req.user:", req.user);
     const currentWorkspace = req.user?.currentWorkspace;
 
     if (!currentWorkspace) {
+      console.log("No workspace found, redirecting to failure");
       return res.redirect(
         `${config.FRONTEND_GOOGLE_CALLBACK_URL}?status=failure`
       );
