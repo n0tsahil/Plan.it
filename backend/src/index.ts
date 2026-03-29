@@ -5,10 +5,6 @@ import session from "cookie-session";
 import { config } from "./config/app.config";
 import connectDatabase from "./config/database.config";
 import { errorHandler } from "./middlewares/errorHandler.middleware";
-import { HTTPSTATUS } from "./config/http.config";
-import { asyncHandler } from "./middlewares/asyncHandler.middleware";
-import { BadRequestException } from "./utils/appError";
-import { ErrorCodeEnum } from "./enums/error-code.enum";
 
 import "./config/passport.config";
 import passport from "passport";
@@ -21,7 +17,6 @@ import projectRoutes from "./routes/project.route";
 import taskRoutes from "./routes/task.route";
 
 const app = express();
-app.set("trust proxy", 1);
 const BASE_PATH = config.BASE_PATH;
 
 app.use(express.json());
@@ -33,9 +28,9 @@ app.use(
     name: "session",
     keys: [config.SESSION_SECRET],
     maxAge: 24 * 60 * 60 * 1000,
-    secure: true,
+    secure: config.NODE_ENV === "production",
     httpOnly: true,
-    sameSite: "none",
+    sameSite: "lax",
   })
 );
 
