@@ -21,6 +21,7 @@ import projectRoutes from "./routes/project.route";
 import taskRoutes from "./routes/task.route";
 
 const app = express();
+app.set("trust proxy", 1);
 const BASE_PATH = config.BASE_PATH;
 
 app.use(express.json());
@@ -32,9 +33,9 @@ app.use(
     name: "session",
     keys: [config.SESSION_SECRET],
     maxAge: 24 * 60 * 60 * 1000,
-    secure: config.NODE_ENV === "production",
+    secure: true,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
   })
 );
 
